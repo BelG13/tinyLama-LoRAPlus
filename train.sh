@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 pip install -e '.[all]'
-pip install git+https://github.com/EleutherAI/lm-evaluation-harness
+# pip install git+https://github.com/EleutherAI/lm-evaluation-harness
+pip install 'lm_eval @ git+https://github.com/EleutherAI/lm-evaluation-harness.git@115206dc89dad67b8b'
 pip install wandb
 
 # Downloading the model
@@ -11,7 +12,7 @@ litgpt download \
 
 # Uncomment the following line and add your Huggingface Token here
 # Generate or retrieve your Huggingface Token at https://huggingface.co/settings/tokens
-# export HF_TOKEN=[YOUR_HF_TOKEN]
+export HF_TOKEN=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
 
 # LoRA instruction tuning
 # Before finetuning, please run torch.cuda.is_bf16_supported(). If it returns False, set --precision fp16-true
