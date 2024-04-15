@@ -1,0 +1,1 @@
+{"results": {"hellaswag": {"acc": 0.4606652061342362, "acc_stderr": 0.004974316807920401, "acc_norm": 0.5980880302728541, "acc_norm_stderr": 0.004892823415546541}}, "versions": {"hellaswag": 0}, "config": {"model": "tiny-llama-1.1b", "batch_size": 1, "device": "cuda:0", "num_fewshot": 0, "limit": null, "bootstrap_iters": 100000, "no_cache": true}}
