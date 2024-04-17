@@ -174,35 +174,28 @@ def main(
 
     trainable_params = [p for p in model.parameters() if p.requires_grad]
     
-     ## For Lora +
-    trainables, trainables_lambda = [], []
-    for name, param in model.named_parameters():
-      if 'lora_A' in name:
-        trainables.append(param)
-      elif 'lora_B' in name:
-        trainables_lambda.append(param)
-
-
     if isinstance(fabric.strategy.precision, BitsandbytesPrecision):
         import bitsandbytes as bnb
 
         optimizer_cls = bnb.optim.PagedAdamW
     else:
         optimizer_cls = torch.optim.AdamW
- 
-    #optimizer = optimizer_cls(
-    #    trainable_params, lr=train.learning_rate, weight_decay=train.weight_decay, betas=(train.beta1, train.beta2)
-    #)
 
+    ### ----- LoRA+ MODIFICATION BELLOW ---- ###
+     
     optimizer = optimizer_cls(
       [
-        {'params' : trainables},
-        {'params' : trainables_lambda, 'lr' : 2**4 * train.learning_rate}
+        {'params' : [param for (name,param) in model.named_parameters() if 'lora_A' in name]},
+        {'params' : [param for (name,param) in model.named_parameters() if 'lora_B' in name],
+         'lr' : 2**4 * train.learning_rate}
       ],
       lr=train.learning_rate,
       weight_decay=train.weight_decay,
       betas=(train.beta1, train.beta2)
     )
+    
+    ### -----  END OF MODIFICATION ----- ###
+    
     optimizer = fabric.setup_optimizers(optimizer)
     scheduler = get_lr_scheduler(optimizer, warmup_steps=train.lr_warmup_steps, max_steps=lr_max_steps)
 
